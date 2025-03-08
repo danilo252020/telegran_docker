@@ -1,24 +1,31 @@
-# Use a imagem base do Jupyter
-FROM jupyter/base-notebook
+FROM jupyter/base-notebook:latest
 
-# Defina o diretório de trabalho no contêiner
-WORKDIR /app
-
-# Use o usuário root para garantir permissões adequadas
 USER root
 
-# Forçar atualização de pacotes do apt e instalar as dependências do sistema e bibliotecas Python necessárias
-RUN apt-get update --fix-missing \
-    && apt-get install -y gcc python3-dev build-essential \
-    && pip install --no-cache-dir -r requirements.txt \
-    && python -m spacy download pt_core_news_sm \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Configurar diretório de trabalho
+WORKDIR /app
 
-# Copiar todos os arquivos do projeto (notebooks, dados, etc.)
-COPY . .
+# Copiar arquivos necessários primeiro para aproveitar cache de camadas
+COPY requirements.txt .
+COPY *.ipynb ./
+COPY *.xlsx ./
 
-# Expor a porta que o Jupyter/Voila vai usar
-EXPOSE 8888
+# Instalar dependências do sistema e Python
+RUN apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    python3-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    python -m spacy download pt_core_news_sm && \
+    python -m nltk.downloader stopwords && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Comando para rodar o Voila (sem --allow-root, como você pediu)
-ENTRYPOINT ["voila", "Analisetelegran_oficial.ipynb", "--port=8888", "--no-browser", "--ip='0.0.0.0'"]
+# Voltar para usuário não-root
+USER ${NB_UID}
+
+# Porta padrão para Voilà
+EXPOSE 8866
+
+# Comando para executar o Voilà
+CMD ["voila", "Analisetelegran_oficial.ipynb", "--port=8866", "--no-browser", "--enable_nbextensions=True"]
