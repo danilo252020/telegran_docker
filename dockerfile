@@ -15,4 +15,4 @@ RUN apt-get update && apt-get install -y gcc python3-dev build-essential \
 COPY . .
 
 # Inicia o Voila apontando para o seu notebook e configurando a porta desejada (ex.: 8868)
-ENTRYPOINT ["voila", "analisetelegra_oficial.ipynb", "--port=8868", "--no-browser", "--allow-root"]
+ENTRYPOINT ["voila", "Analisetelegran_oficial.ipynb", "--port=8868", "--no-browser", "--allow-root"]
