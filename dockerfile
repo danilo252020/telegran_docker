@@ -4,8 +4,8 @@ FROM jupyter/base-notebook
 # Defina o diretório de trabalho no contêiner
 WORKDIR /app
 
-# Copie o arquivo de dependências (requirements.txt)
-COPY requirements.txt ./
+# Use o usuário root para garantir permissões adequadas
+USER root
 
 # Instale as dependências do sistema e as bibliotecas Python necessárias
 RUN apt-get update && apt-get install -y gcc python3-dev build-essential \
