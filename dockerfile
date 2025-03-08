@@ -1,31 +1,30 @@
-FROM jupyter/base-notebook:latest
+# Substitua seu Dockerfile por esta versão otimizada
+FROM jupyter/base-notebook:python-3.11.5
 
 USER root
 
-# Configurar diretório de trabalho
-WORKDIR /app
+# Instalação crítica de dependências do sistema
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copiar arquivos necessários primeiro para aproveitar cache de camadas
+# Configuração do ambiente Python
 COPY requirements.txt .
-COPY *.ipynb ./
-COPY *.xlsx ./
-
-# Instalar dependências do sistema e Python
-RUN apt-get update --fix-missing && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    python3-dev && \
-    pip install --no-cache-dir -r requirements.txt && \
+RUN pip install --no-cache-dir -r requirements.txt && \
     python -m spacy download pt_core_news_sm && \
     python -m nltk.downloader stopwords && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    jupyter nbextension enable --py widgetsnbextension
 
-# Voltar para usuário não-root
-USER ${NB_UID}
+# Permissões e limpeza
+COPY . /app
+WORKDIR /app
+RUN chown -R $NB_UID:$NB_GID /app && \
+    fix-permissions /app
 
-# Porta padrão para Voilà
-EXPOSE 8866
+USER $NB_UID
 
-# Comando para executar o Voilà
-CMD ["voila", "Analisetelegran_oficial.ipynb", "--port=8866", "--no-browser", "--enable_nbextensions=True"]
+# Comando de inicialização reforçado
+CMD ["voila", "Analisetelegran_oficial.ipynb", "--port=8866", "--no-browser", "--enable_nbextensions=True", "--Voila.ip=0.0.0.0", "--debug"]
