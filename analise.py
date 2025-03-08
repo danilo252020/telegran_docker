@@ -22,7 +22,7 @@ import os
 from textwrap import wrap
 import time
 import plotly.io as pio
-import streamlit as st
+
 
 nltk.download('stopwords')
 stop_words_pt = stopwords.words('portuguese')
