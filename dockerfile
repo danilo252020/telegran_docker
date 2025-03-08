@@ -15,4 +15,4 @@ RUN apt-get update && apt-get install -y gcc python3-dev build-essential \
 COPY . .
 
 # Inicia o Voila sem "--allow-root"
-CMD ["voila", "Analisetelegran_oficial.ipynb", "--port=8888", "--no-browser"]
+ENTRYPOINT ["voila", "Analisetelegran_oficial.ipynb", "--port=8888", "--no-browser"]
