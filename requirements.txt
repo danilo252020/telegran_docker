@@ -10,3 +10,4 @@ reportlab
 groq
 bertopic
 scikit-learn
+openpyxl
