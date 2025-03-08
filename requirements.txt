@@ -11,3 +11,4 @@ groq
 bertopic
 scikit-learn
 openpyxl
+notebook
