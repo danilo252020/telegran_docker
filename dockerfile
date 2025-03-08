@@ -7,16 +7,17 @@ WORKDIR /app
 # Use o usuário root para garantir permissões adequadas
 USER root
 
-# Instale as dependências do sistema e as bibliotecas Python necessárias
-RUN apt-get update && apt-get install -y gcc python3-dev build-essential \
+# Forçar atualização de pacotes do apt e instalar as dependências do sistema e bibliotecas Python necessárias
+RUN apt-get update --fix-missing \
+    && apt-get install -y gcc python3-dev build-essential \
     && pip install --no-cache-dir -r requirements.txt \
     && python -m spacy download pt_core_news_sm \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copia todos os arquivos do projeto (notebooks, dados, etc.)
+# Copiar todos os arquivos do projeto (notebooks, dados, etc.)
 COPY . .
 
-# Exponha a porta que o Jupyter/Voila vai usar
+# Expor a porta que o Jupyter/Voila vai usar
 EXPOSE 8888
 
 # Comando para rodar o Voila (sem --allow-root, como você pediu)
