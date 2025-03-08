@@ -284,4 +284,4 @@ def mostrar_nuvem_por_grupo(data_selecionada, grupo):
     else:
         print(f"Nenhum conteúdo encontrado para a data: {data_selecionada}")
 # Conectar a função de exibição da nuvem de palavras ao dropdown
-#interact(mostrar_nuvem_por_grupo, data_selecionada=dropdown, grupo=['jairbolsonarobrasil', 'lulanoTelegram', 'bolsonaro_usernames', 'lula_usernames', 'neutros_usernames']) 
+interact(mostrar_nuvem_por_grupo, data_selecionada=dropdown, grupo=['jairbolsonarobrasil', 'lulanoTelegram', 'bolsonaro_usernames', 'lula_usernames', 'neutros_usernames']) 

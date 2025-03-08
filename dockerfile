@@ -10,4 +10,4 @@ RUN apt-get update && apt-get install -y gcc python3-dev musl-dev \
 
 COPY . .
 
-CMD ["python", "app.py"]
+CMD ["python", "analise.py"]
