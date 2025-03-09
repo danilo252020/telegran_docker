@@ -14,6 +14,9 @@ COPY requirements.txt .
 # Instala as dependências Python
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Instala o modelo do SpaCy
+RUN python -m spacy download pt_core_news_sm
+
 # Copia o restante da aplicação para o contêiner
 COPY . .
 
