@@ -1,24 +1,19 @@
-FROM python:3.10-slim
+# Use uma imagem base com Python
+FROM python:3.11
 
-# Define o diretório de trabalho
+# Atualize o apt-get e instale as dependências para o Tkinter
+RUN apt-get update && \
+    apt-get install -y tk && \
+    apt-get clean
+
+# Defina o diretório de trabalho
 WORKDIR /app
 
-# Instala dependências do sistema, incluindo o tk
-RUN apt-get update && apt-get install -y \
-    tk \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copia os arquivos necessários para o contêiner
-COPY requirements.txt .
-
-# Instala as dependências Python
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Instala o modelo do SpaCy
-RUN python -m spacy download pt_core_news_sm
-
-# Copia o restante da aplicação para o contêiner
+# Copie os arquivos necessários para dentro do container
 COPY . .
 
-# Define o comando para rodar a aplicação
-CMD ["python", "analise.py"]
+# Instalar as dependências do Python do requirements.txt, caso haja
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Comando para rodar o Tkinter no arquivo desejado
+CMD ["python", "test_tkinter.py"]
