@@ -119,7 +119,7 @@ class TelegramAnalyzer:
             color='username',
             labels={"data": "Data (Dia-Mês-Ano)", "Quantidade de Mensagens": "Quantidade de Mensagens"},
             title='Quantidade de Mensagens por Autor e Data',
-            color_discrete_sequence=["blue", "red"]  # Define as cores para os autores na ordem
+            color_discrete_sequence=["blue", "red"]
         )
         fig.update_layout(
             xaxis=dict(
@@ -134,6 +134,57 @@ class TelegramAnalyzer:
             yaxis=dict(title='Quantidade de Mensagens'),
             dragmode='zoom',
             hovermode='x unified'
+        )
+        return fig
+
+    def grafico_mensagens_por_grupo(self):
+        """
+        Retorna um gráfico interativo da quantidade de mensagens por data para os grupos:
+        bolsonaro_usernames, lula_usernames e neutros_usernames.
+        """
+        # Cria uma cópia dos dados e adiciona uma coluna 'grupo'
+        df_temp = self.df.copy()
+        def assign_group(username):
+            if username in self.bolsonaro_usernames:
+                return 'bolsonaro_usernames'
+            elif username in self.lula_usernames:
+                return 'lula_usernames'
+            elif username in self.neutros_usernames:
+                return 'neutros_usernames'
+            else:
+                return None
+        df_temp['grupo'] = df_temp['username'].apply(assign_group)
+        df_temp = df_temp[df_temp['grupo'].notnull()]
+        
+        # Agrupa por data e grupo
+        mensagens_por_grupo = df_temp.groupby([df_temp['data'].dt.date, 'grupo']).size().reset_index(name='Quantidade de Mensagens')
+        mensagens_por_grupo = mensagens_por_grupo.sort_values(by='data')
+        
+        # Cria o gráfico interativo com Plotly Express
+        fig = px.line(
+            mensagens_por_grupo,
+            x='data',
+            y='Quantidade de Mensagens',
+            color='grupo',
+            labels={
+                "data": "Data (Dia-Mês-Ano)",
+                "Quantidade de Mensagens": "Quantidade de Mensagens",
+                "grupo": "Grupo"
+            },
+            title='Quantidade de Mensagens por Grupo e Data'
+        )
+        fig.update_layout(
+            xaxis=dict(
+                title="Data (Dia-Mês-Ano)",
+                rangeslider=dict(
+                    visible=True,
+                    range=[mensagens_por_grupo['data'].min(), mensagens_por_grupo['data'].max()]
+                ),
+                tickformat="%d-%m-%Y"
+            ),
+            yaxis=dict(title="Quantidade de Mensagens"),
+            dragmode="zoom",
+            hovermode="x unified"
         )
         return fig
 
@@ -239,6 +290,10 @@ def main():
     if st.button("Gráfico de Mensagens por Autor"):
         fig = analyzer.grafico_mensagens_por_autor(['jairbolsonarobrasil', 'LulanoTelegram'])
         st.plotly_chart(fig)
+    if st.button("Gráfico de Mensagens por Grupo"):
+        fig = analyzer.grafico_mensagens_por_grupo()
+        if fig:
+            st.plotly_chart(fig)
     
     st.header("Gráficos de Reações")
     if st.button("Gráfico de Reações (jairbolsonarobrasil)"):
