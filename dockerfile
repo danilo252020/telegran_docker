@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Define o comando para rodar a aplicação
-CMD ["python", "seu_script.py"]
+CMD ["python", "analise.py"]
