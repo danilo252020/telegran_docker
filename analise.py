@@ -8,8 +8,6 @@ import plotly.graph_objects as go
 import datetime as dt
 import spacy
 from wordcloud import WordCloud
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
 import argparse
 import os
 from pathlib import Path
