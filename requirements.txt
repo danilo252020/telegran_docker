@@ -5,5 +5,5 @@ plotly
 spacy
 wordcloud
 argparse
-tk
 openpyxl
+streamlit
